@@ -6,14 +6,14 @@
     <span class="sub">page {{ currentPage() }} / {{ numPages() || '…' }}</span>
   </button>
 
-  <button
+  <!-- <button
     class="icon"
     [class.on]="currentBookmarked()"
     (click)="addBookmark()"
     aria-label="Add bookmark"
   >
     {{ currentBookmarked() ? '★' : '☆' }}
-  </button>
+  </button> -->
   <button
     class="icon"
     [class.on]="chapter()?.read"
