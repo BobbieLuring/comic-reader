@@ -1,15 +1,24 @@
 <header class="bar">
   <h1>Library</h1>
-  <label class="btn btn-ghost import-btn">
-    <input
-      type="file"
-      accept="application/pdf,.pdf"
-      multiple
-      hidden
-      (change)="onFilesSelected($event)"
-    />
-    Import PDFs
-  </label>
+  <div class="bar-actions">
+    <button
+      class="theme-toggle"
+      (click)="theme.toggle()"
+      [attr.aria-label]="theme.dark() ? 'Switch to light mode' : 'Switch to dark mode'"
+    >
+      {{ theme.dark() ? '☀' : '☾' }}
+    </button>
+    <label class="btn btn-ghost import-btn">
+      <input
+        type="file"
+        accept="application/pdf,.pdf"
+        multiple
+        hidden
+        (change)="onFilesSelected($event)"
+      />
+      Import PDFs
+    </label>
+  </div>
 </header>
 
 <main class="content">

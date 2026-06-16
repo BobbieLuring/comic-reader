@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ComicStore } from '../../core/comic-store';
+import { Theme } from '../../core/theme';
 import { Chapter } from '../../core/models';
 
 @Component({
@@ -11,6 +12,7 @@ import { Chapter } from '../../core/models';
 })
 export class Library {
   protected readonly store = inject(ComicStore);
+  protected readonly theme = inject(Theme);
   private readonly router = inject(Router);
 
   protected readonly confirmingClear = signal(false);

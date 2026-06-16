@@ -24,8 +24,33 @@
   letter-spacing: -0.02em;
 }
 
+.bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
 .import-btn {
   margin: 0;
+}
+
+.theme-toggle {
+  width: 2.4rem;
+  height: 2.4rem;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  font-size: 1.1rem;
+  color: var(--text-dim);
+  background: var(--surface);
+  border: none;
+  border-radius: 50%;
+  box-shadow: var(--shadow-raised-sm);
+  transition: box-shadow 0.12s ease, color 0.12s ease;
+}
+
+.theme-toggle:active {
+  box-shadow: var(--shadow-pressed);
 }
 
 .content {

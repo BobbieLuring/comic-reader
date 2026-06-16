@@ -1,20 +1,22 @@
 /* =======================================================================
-   THEME — every colour lives here. Edit this block to restyle the whole app.
-   (The only colours outside this file are the PWA chrome in index.html /
-   manifest.webmanifest — the phone status-bar tint — noted there.)
+   THEME — every colour lives here. Light (Sand) is the default; dark
+   (Charcoal) overrides under :root[data-theme="dark"]. Toggle persists via
+   localStorage (see theme.ts); the initial attribute is set in index.html.
+   (PWA chrome — the status-bar tint — is also mirrored in index.html /
+   manifest.webmanifest, noted there.)
    ======================================================================= */
 :root {
-  /* ---- Surfaces (the grays) ------------------------------------------ */
-  --bg: #bbbbbb; /* app background / page behind everything */
-  --surface: #cacaca; /* raised things: cards, buttons, sheet, icons */
-  --surface-2: #b1b1b1; /* recessed things: grooves, read chapters, notes */
+  /* ---- Surfaces (Sand) ----------------------------------------------- */
+  --bg: #e1dacd; /* app background */
+  --surface: #ece7df; /* raised: cards, buttons, sheet, icons */
+  --surface-2: #d9d0bf; /* recessed: grooves, read chapters, notes */
   --page-bg: #ffffff; /* the comic page behind the rendered PDF */
 
   /* ---- Accent (the one pop of colour) -------------------------------- */
-  --accent: #ef8f43; /* Continue button, progress fill, active states */
+  --accent: #ef8f43;
   --accent-light: #ffb274;
   --accent-dark: #b86a26; /* links + small accent text on a light surface */
-  --accent-contrast: #ffffff; /* text/icons sitting on top of --accent */
+  --accent-contrast: #ffffff; /* text/icons on top of --accent */
 
   /* ---- Text ---------------------------------------------------------- */
   --text: #2d2d33;
@@ -30,8 +32,8 @@
   --edge-light: hsl(0 0% 100% / 0.5); /* the 1px lit top edge */
 
   /* ===== Derived tokens — usually leave these; tweak the values above ==
-     Realistic shadows (Josh Comeau style): one light source from straight
-     above, layered translucent shadows, plus a top edge highlight. */
+     Realistic shadows: one light source from straight above, layered
+     translucent shadows, plus a top edge highlight. */
   --r: 1rem;
   --r-sm: 0.7rem;
   --edge: inset 0 1px 0 var(--edge-light);
@@ -58,6 +60,50 @@
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 
   color-scheme: light;
+}
+
+/* ---- Dark (Charcoal). Shadows are recut for a dark surface: near-black
+   cast at higher opacity + a very faint light top edge. ----------------- */
+:root[data-theme='dark'] {
+  --bg: #23252b;
+  --surface: #2e313a;
+  --surface-2: #191b20;
+  --page-bg: #ffffff;
+
+  --accent: #ef8f43;
+  --accent-light: #ffb274;
+  --accent-dark: #f2a35d; /* lighter so links read on charcoal */
+  --accent-contrast: #ffffff;
+
+  --text: #e7e8ec;
+  --text-dim: #9a9ca6;
+  --text-faint: #6b6d77;
+
+  --danger: #e98a7c;
+  --scrim: hsl(220 30% 2% / 0.6);
+
+  --shadow-color: 222 35% 3%;
+  --edge-light: hsl(220 30% 100% / 0.06);
+
+  --shadow-raised:
+    var(--edge),
+    0 1px 2px hsl(var(--shadow-color) / 0.5),
+    0 3px 6px hsl(var(--shadow-color) / 0.45),
+    0 8px 16px hsl(var(--shadow-color) / 0.4);
+  --shadow-raised-sm:
+    var(--edge),
+    0 1px 2px hsl(var(--shadow-color) / 0.5),
+    0 2px 4px hsl(var(--shadow-color) / 0.42);
+  --shadow-accent:
+    0 1px 2px hsl(var(--shadow-color) / 0.5),
+    0 4px 8px hsl(var(--shadow-color) / 0.45),
+    0 10px 20px hsl(var(--shadow-color) / 0.4);
+  --shadow-pressed:
+    inset 0 1px 2px hsl(var(--shadow-color) / 0.6),
+    inset 0 2px 5px hsl(var(--shadow-color) / 0.45);
+  --hairline: 0 6px 14px -12px hsl(var(--shadow-color) / 0.85);
+
+  color-scheme: dark;
 }
 
 * {
