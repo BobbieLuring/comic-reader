@@ -32,9 +32,6 @@ jobs:
       # lets a hard refresh on /read/:id reach the Angular router.
       - name: SPA fallback
         run: cp dist/comic-reader/browser/index.html dist/comic-reader/browser/404.html
-      - uses: actions/configure-pages@v5
-        with:
-          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist/comic-reader/browser
