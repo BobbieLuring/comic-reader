@@ -40,8 +40,13 @@ export class Reader {
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly scroller = viewChild<ElementRef<HTMLDivElement>>('scroller');
+  private readonly rbar = viewChild<ElementRef<HTMLElement>>('rbar');
 
   protected readonly chapterId = signal<string | null>(null);
+  /** The top bar slides away while reading and returns on scroll-up. */
+  protected readonly barHidden = signal(false);
+  /** Measured height of the top bar; reserved as scroller top padding. */
+  protected readonly barH = signal(0);
   protected readonly doc = signal<PDFDocumentProxy | null>(null);
   protected readonly pages = signal<PageSlot[]>([]);
   protected readonly numPages = signal(0);
@@ -88,6 +93,7 @@ export class Reader {
   });
 
   private restoreToPage: number | null = null;
+  private lastScrollTop = 0;
   private rafPending = false;
   private persistTimer: ReturnType<typeof setTimeout> | null = null;
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
@@ -102,11 +108,13 @@ export class Reader {
 
     // Once the scroller exists, measure it and keep it in sync with rotation.
     afterNextRender(() => {
-      this.measureWidth();
+      this.measure();
       const el = this.scroller()?.nativeElement;
-      if (el && 'ResizeObserver' in window) {
-        const ro = new ResizeObserver(() => this.measureWidth());
-        ro.observe(el);
+      const bar = this.rbar()?.nativeElement;
+      if ('ResizeObserver' in window) {
+        const ro = new ResizeObserver(() => this.measure());
+        if (el) ro.observe(el);
+        if (bar) ro.observe(bar);
         this.destroyRef.onDestroy(() => ro.disconnect());
       }
     });
@@ -142,6 +150,8 @@ export class Reader {
     this.currentPage.set(1);
     this.numPages.set(0);
     this.lastPersisted = 0;
+    this.lastScrollTop = 0;
+    this.barHidden.set(false);
 
     await this.store.init();
     void this.store.recordOpened(id);
@@ -178,7 +188,7 @@ export class Reader {
 
       this.pages.set(sizes.map((s, i) => ({ num: i + 1, ratio: s.height / s.width })));
       this.restoreToPage = Math.min(Math.max(chapter.lastPage, 1), doc.numPages);
-      this.measureWidth();
+      this.measure();
       this.loading.set(false);
     } catch {
       this.error.set('Could not open this PDF.');
@@ -202,8 +212,17 @@ export class Reader {
 
     const top = el.scrollTop;
     const vh = el.clientHeight;
-    const probe = top + vh * 0.4;
+    const bar = this.barH();
 
+    // Hide the bar on scroll-down, reveal on scroll-up, always show at the top.
+    const dy = top - this.lastScrollTop;
+    if (top <= bar + 4) this.barHidden.set(false);
+    else if (dy > 6) this.barHidden.set(true);
+    else if (dy < -6) this.barHidden.set(false);
+    this.lastScrollTop = top;
+
+    // Pages start `bar` px down (scroller top padding), so offset by it.
+    const probe = top + vh * 0.4 - bar;
     let current = 1;
     for (let i = 0; i < offsets.length; i++) {
       if (offsets[i] <= probe) current = i + 1;
@@ -212,8 +231,8 @@ export class Reader {
     this.currentPage.set(current);
 
     // Keep one screen above and two below rendered; free everything else.
-    const lo = top - vh;
-    const hi = top + vh * 2;
+    const lo = top - bar - vh;
+    const hi = top - bar + vh * 2;
     const active = new Set<number>();
     for (let i = 0; i < offsets.length; i++) {
       const a = offsets[i];
@@ -224,7 +243,7 @@ export class Reader {
 
     this.schedulePersist(current);
 
-    if (top + vh >= total - 48) this.markReadIfNeeded();
+    if (top + vh >= bar + total - 48) this.markReadIfNeeded();
   }
 
   private schedulePersist(page: number): void {
@@ -250,13 +269,19 @@ export class Reader {
     const { offsets } = this.layout();
     if (!el) return;
     el.scrollTo({ top: offsets[page - 1] ?? 0 });
+    // Treat programmatic jumps as the new baseline so they don't read as a
+    // user scroll-down and hide the bar.
+    this.lastScrollTop = el.scrollTop;
   }
 
-  private measureWidth(): void {
+  private measure(): void {
     const el = this.scroller()?.nativeElement;
-    if (!el) return;
-    const w = Math.min(el.clientWidth - SIDE_INSET, MAX_WIDTH);
-    if (w > 0) this.contentWidth.set(w);
+    if (el) {
+      const w = Math.min(el.clientWidth - SIDE_INSET, MAX_WIDTH);
+      if (w > 0) this.contentWidth.set(w);
+    }
+    const bar = this.rbar()?.nativeElement;
+    if (bar && bar.offsetHeight > 0) this.barH.set(bar.offsetHeight);
   }
 
   private teardownDoc(): void {

@@ -1,4 +1,4 @@
-<header class="rbar">
+<header class="rbar" #rbar [class.hidden]="barHidden()">
   <button class="icon" (click)="back()" aria-label="Back to library">‹</button>
 
   <button class="rtitle" (click)="showBookmarks.set(!showBookmarks())">
@@ -24,7 +24,7 @@
   </button>
 </header>
 
-<div class="scroller" #scroller (scroll)="onScroll()">
+<div class="scroller" #scroller (scroll)="onScroll()" [style.padding-top.px]="barH()">
   @if (loading()) {
     <div class="state">Loading chapter…</div>
   }
