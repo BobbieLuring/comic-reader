@@ -14,7 +14,7 @@ import { renderPage } from '../../core/pdf';
     `
       :host {
         display: block;
-        background: #000;
+        background: var(--page-bg);
       }
       canvas {
         display: block;

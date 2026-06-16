@@ -23,7 +23,9 @@ interface PageSlot {
 }
 
 const MAX_WIDTH = 820;
-const PAGE_GAP = 10;
+const PAGE_GAP = 16;
+/** Inset on each side so the neumorphic page shadow isn't clipped by the scroller. */
+const SIDE_INSET = 32;
 
 @Component({
   selector: 'app-reader',
@@ -253,7 +255,7 @@ export class Reader {
   private measureWidth(): void {
     const el = this.scroller()?.nativeElement;
     if (!el) return;
-    const w = Math.min(el.clientWidth, MAX_WIDTH);
+    const w = Math.min(el.clientWidth - SIDE_INSET, MAX_WIDTH);
     if (w > 0) this.contentWidth.set(w);
   }
 

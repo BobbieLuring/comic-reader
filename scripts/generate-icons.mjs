@@ -8,10 +8,10 @@ import { dirname, join } from 'node:path';
 const OUT = join(dirname(fileURLToPath(import.meta.url)), '..', 'public', 'icons');
 mkdirSync(OUT, { recursive: true });
 
-const BG = [0x6c, 0x8c, 0xff];
-const PAPER = [0xf2, 0xf4, 0xff];
-const INK = [0x0e, 0x0f, 0x13];
-const LINE = [0xb9, 0xc2, 0xe6];
+const BG = [0xf0, 0x94, 0x4b];
+const PAPER = [0xff, 0xf6, 0xee];
+const INK = [0x5d, 0x46, 0x34];
+const LINE = [0xe7, 0xc2, 0xa3];
 
 function draw(size) {
   const buf = Buffer.alloc(size * size * 4);

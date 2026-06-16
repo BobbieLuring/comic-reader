@@ -1,18 +1,63 @@
+/* =======================================================================
+   THEME — every colour lives here. Edit this block to restyle the whole app.
+   (The only colours outside this file are the PWA chrome in index.html /
+   manifest.webmanifest — the phone status-bar tint — noted there.)
+   ======================================================================= */
 :root {
-  --bg: #0e0f13;
-  --surface: #181a21;
-  --surface-2: #21242e;
-  --border: #2c303b;
-  --text: #e8eaf0;
-  --text-dim: #9aa0ad;
-  --text-faint: #5c6270;
-  --accent: #6c8cff;
-  --accent-contrast: #0e0f13;
-  --danger: #ff6b6b;
+  /* ---- Surfaces (the grays) ------------------------------------------ */
+  --bg: #bbbbbb; /* app background / page behind everything */
+  --surface: #cacaca; /* raised things: cards, buttons, sheet, icons */
+  --surface-2: #b1b1b1; /* recessed things: grooves, read chapters, notes */
+  --page-bg: #ffffff; /* the comic page behind the rendered PDF */
+
+  /* ---- Accent (the one pop of colour) -------------------------------- */
+  --accent: #ef8f43; /* Continue button, progress fill, active states */
+  --accent-light: #ffb274;
+  --accent-dark: #b86a26; /* links + small accent text on a light surface */
+  --accent-contrast: #ffffff; /* text/icons sitting on top of --accent */
+
+  /* ---- Text ---------------------------------------------------------- */
+  --text: #2d2d33;
+  --text-dim: #57575f;
+  --text-faint: #7c7c85;
+
+  /* ---- Feedback ------------------------------------------------------ */
+  --danger: #c0392b;
+  --scrim: hsl(220 9% 10% / 0.45); /* dim behind the bookmark sheet */
+
+  /* ---- Shadow tuning ------------------------------------------------- */
+  --shadow-color: 220 9% 18%; /* hue/sat/light shared by every shadow */
+  --edge-light: hsl(0 0% 100% / 0.5); /* the 1px lit top edge */
+
+  /* ===== Derived tokens — usually leave these; tweak the values above ==
+     Realistic shadows (Josh Comeau style): one light source from straight
+     above, layered translucent shadows, plus a top edge highlight. */
+  --r: 1rem;
+  --r-sm: 0.7rem;
+  --edge: inset 0 1px 0 var(--edge-light);
+
+  --shadow-raised:
+    var(--edge),
+    0 1px 2px hsl(var(--shadow-color) / 0.15),
+    0 3px 6px hsl(var(--shadow-color) / 0.14),
+    0 8px 16px hsl(var(--shadow-color) / 0.14);
+  --shadow-raised-sm:
+    var(--edge),
+    0 1px 2px hsl(var(--shadow-color) / 0.16),
+    0 2px 4px hsl(var(--shadow-color) / 0.14);
+  --shadow-accent:
+    0 1px 2px hsl(var(--shadow-color) / 0.18),
+    0 4px 8px hsl(var(--shadow-color) / 0.16),
+    0 10px 20px hsl(var(--shadow-color) / 0.16);
+  --shadow-pressed:
+    inset 0 1px 2px hsl(var(--shadow-color) / 0.3),
+    inset 0 2px 5px hsl(var(--shadow-color) / 0.18);
+  --hairline: 0 6px 14px -12px hsl(var(--shadow-color) / 0.5);
+
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 * {
@@ -40,41 +85,54 @@ button {
 }
 
 a {
-  color: var(--accent);
+  color: var(--accent-dark);
 }
 
-/* Shared button styles used across screens. */
+/* Shared buttons. */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border: 1px solid var(--border);
-  background: var(--surface-2);
+  border: none;
+  background: var(--surface);
   color: var(--text);
-  border-radius: 0.6rem;
-  padding: 0.6rem 0.9rem;
-  font-weight: 600;
+  border-radius: var(--r-sm);
+  padding: 0.7rem 1rem;
+  font-weight: 700;
   font-size: 0.95rem;
   line-height: 1;
+  box-shadow: var(--shadow-raised-sm);
+  transition: box-shadow 0.12s ease, transform 0.12s ease;
 }
 
 .btn:active {
+  box-shadow: var(--shadow-pressed);
   transform: translateY(1px);
 }
 
 .btn-primary {
   background: var(--accent);
-  border-color: var(--accent);
   color: var(--accent-contrast);
+  box-shadow: var(--shadow-accent);
+}
+
+.btn-primary:active {
+  box-shadow: var(--shadow-pressed);
 }
 
 .btn-ghost {
   background: transparent;
-  border-color: transparent;
+  box-shadow: none;
+}
+
+.btn-ghost:active {
+  box-shadow: none;
+  transform: none;
+  opacity: 0.6;
 }
 
 .btn:disabled {
-  opacity: 0.45;
+  opacity: 0.5;
   pointer-events: none;
 }
