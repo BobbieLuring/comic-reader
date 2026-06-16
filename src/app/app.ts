@@ -1,12 +1,16 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { ComicStore } from './core/comic-store';
 
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet],
-  templateUrl: './app.html',
-  styleUrl: './app.css'
+  template: '<router-outlet />',
 })
 export class App {
-  protected readonly title = signal('comic-reader');
+  private readonly store = inject(ComicStore);
+
+  constructor() {
+    void this.store.init();
+  }
 }

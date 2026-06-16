@@ -1,0 +1,125 @@
+<header class="bar">
+  <h1>Library</h1>
+  <label class="btn btn-ghost import-btn">
+    <input
+      type="file"
+      accept="application/pdf,.pdf"
+      multiple
+      hidden
+      (change)="onFilesSelected($event)"
+    />
+    Import PDFs
+  </label>
+</header>
+
+<main class="content">
+  @if (store.importing().active) {
+    <div class="import-status">
+      <div class="import-row">
+        <span>Importing… {{ store.importing().done }} / {{ store.importing().total }}</span>
+      </div>
+      <div class="track">
+        <div
+          class="fill"
+          [style.width.%]="(store.importing().done / store.importing().total) * 100"
+        ></div>
+      </div>
+      <div class="import-name">{{ store.importing().name }}</div>
+    </div>
+  }
+
+  @if (store.chapters().length === 0 && !store.importing().active) {
+    <section class="empty">
+      <div class="empty-icon">📚</div>
+      <h2>No chapters yet</h2>
+      <p>Import the chapter PDFs to start reading. They're copied into the app and work offline.</p>
+      <label class="btn btn-primary">
+        <input
+          type="file"
+          accept="application/pdf,.pdf"
+          multiple
+          hidden
+          (change)="onFilesSelected($event)"
+        />
+        Import chapter PDFs
+      </label>
+      <p class="hint">
+        Tip: on iPhone, tap the button → <b>Browse</b>, open the comic folder, tap
+        <b>Select</b>, choose every chapter, then <b>Open</b>.
+      </p>
+    </section>
+  } @else {
+    @if (store.continueTarget(); as target) {
+      <a class="continue" [routerLink]="['/read', target.id]">
+        <span class="continue-label">Continue</span>
+        <span class="continue-title">{{ target.title }}</span>
+        @if (target.lastPage > 1 && !target.read) {
+          <span class="continue-page">page {{ target.lastPage }}</span>
+        }
+      </a>
+    }
+
+    <div class="progress-summary">
+      <div class="track">
+        <div class="fill" [style.width.%]="store.stats().percent"></div>
+      </div>
+      <span class="progress-text">
+        {{ store.stats().read }} / {{ store.stats().total }} read ({{ store.stats().percent }}%)
+      </span>
+    </div>
+
+    <ul class="chapters">
+      @for (chapter of store.chapters(); track chapter.id) {
+        <li>
+          <button
+            class="chapter"
+            [class.read]="chapter.read"
+            (click)="open(chapter)"
+          >
+            <span class="num">{{ chapter.order }}</span>
+            <span class="ch-main">
+              <span class="ch-title">{{ chapter.title }}</span>
+              <span class="ch-sub">
+                @if (chapter.read) {
+                  <span class="tag tag-read">Read</span>
+                } @else if (chapter.lastPage > 1) {
+                  <span class="tag tag-progress">In progress · p.{{ chapter.lastPage }}</span>
+                }
+                @if (bookmarkedIds().has(chapter.id)) {
+                  <span class="tag tag-bookmark">★</span>
+                }
+              </span>
+            </span>
+            <span class="chev">›</span>
+          </button>
+        </li>
+      }
+    </ul>
+  }
+</main>
+
+@if (store.storage(); as s) {
+  <footer class="storage" [class.warn]="storagePercent() >= 80">
+    <span>
+      {{ formatBytes(s.usage) }}
+      @if (s.quota) {
+        / {{ formatBytes(s.quota) }} used ({{ storagePercent() }}%)
+      }
+      used on device
+    </span>
+    @if (!s.persisted) {
+      <span class="persist-note">storage not pinned — iOS may evict if space is low</span>
+    }
+    @if (store.chapters().length > 0) {
+      @if (confirmingClear()) {
+        <span class="confirm">
+          Delete all imported chapters?
+          <button class="link danger" (click)="clearAll()">Yes, delete</button>
+          <button class="link" (click)="confirmingClear.set(false)">Cancel</button>
+        </span>
+      } @else {
+        <button class="link" (click)="confirmingClear.set(true)">Clear all</button>
+      }
+    }
+  </footer>
+}

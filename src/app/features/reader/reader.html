@@ -1,0 +1,87 @@
+<header class="rbar">
+  <button class="icon" (click)="back()" aria-label="Back to library">‹</button>
+
+  <button class="rtitle" (click)="showBookmarks.set(!showBookmarks())">
+    <span class="t">{{ chapter()?.title ?? 'Reading' }}</span>
+    <span class="sub">page {{ currentPage() }} / {{ numPages() || '…' }}</span>
+  </button>
+
+  <button
+    class="icon"
+    [class.on]="currentBookmarked()"
+    (click)="addBookmark()"
+    aria-label="Add bookmark"
+  >
+    {{ currentBookmarked() ? '★' : '☆' }}
+  </button>
+  <button
+    class="icon"
+    [class.on]="chapter()?.read"
+    (click)="toggleRead()"
+    aria-label="Toggle read"
+  >
+    ✓
+  </button>
+</header>
+
+<div class="scroller" #scroller (scroll)="onScroll()">
+  @if (loading()) {
+    <div class="state">Loading chapter…</div>
+  }
+  @if (error()) {
+    <div class="state error">
+      <p>{{ error() }}</p>
+      <a class="btn btn-ghost" routerLink="/">Back to library</a>
+    </div>
+  }
+
+  @if (doc(); as d) {
+    <div class="pages" [style.min-height.px]="layout().total">
+      @for (slot of pages(); track slot.num) {
+        <app-pdf-page
+          [doc]="d"
+          [pageNum]="slot.num"
+          [width]="contentWidth()"
+          [height]="contentWidth() * slot.ratio"
+          [active]="activeSet().has(slot.num)"
+        />
+      }
+    </div>
+
+    <section class="end">
+      <p class="end-label">End of {{ chapter()?.title }}</p>
+      @if (nextCh(); as n) {
+        <a class="btn btn-primary" [routerLink]="['/read', n.id]">Next: {{ n.title }} ›</a>
+      } @else {
+        <p class="muted">This is the last chapter.</p>
+      }
+      <a class="btn btn-ghost" routerLink="/">Back to library</a>
+    </section>
+  }
+</div>
+
+@if (showBookmarks()) {
+  <div class="sheet-backdrop" (click)="showBookmarks.set(false)"></div>
+  <div class="sheet">
+    <div class="sheet-head">
+      <h3>Bookmarks</h3>
+      <button class="link" (click)="addBookmark()">+ Add at page {{ currentPage() }}</button>
+    </div>
+    @if (chapterBookmarks().length === 0) {
+      <p class="muted">No bookmarks in this chapter yet.</p>
+    } @else {
+      <ul class="bm-list">
+        @for (bm of chapterBookmarks(); track bm.id) {
+          <li>
+            <button class="bm-jump" (click)="jumpTo(bm.page)">Page {{ bm.page }}</button>
+            <button class="link danger" (click)="removeBookmark(bm.id)" aria-label="Delete">×</button>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+}
+
+@if (toast(); as msg) {
+  <div class="toast">{{ msg }}</div>
+}
