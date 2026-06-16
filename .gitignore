@@ -29,6 +29,9 @@ yarn-error.log
 !.vscode/mcp.json
 .history/*
 
+# Claude Code (local tooling config + git worktrees)
+.claude/
+
 # Miscellaneous
 /.angular/cache
 .sass-cache/
