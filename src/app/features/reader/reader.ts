@@ -264,6 +264,12 @@ export class Reader {
     if (id && ch && !ch.read) void this.store.setRead(id, true);
   }
 
+  /** Whole-pixel page height, matching the offset math so pages stack with no
+   *  sub-pixel gaps. */
+  protected pageHeight(ratio: number): number {
+    return Math.round(this.contentWidth() * ratio);
+  }
+
   protected scrollToPage(page: number): void {
     const el = this.scroller()?.nativeElement;
     const { offsets } = this.layout();

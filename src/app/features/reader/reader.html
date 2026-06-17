@@ -42,7 +42,7 @@
           [doc]="d"
           [pageNum]="slot.num"
           [width]="contentWidth()"
-          [height]="contentWidth() * slot.ratio"
+          [height]="pageHeight(slot.ratio)"
           [active]="activeSet().has(slot.num)"
         />
       }

@@ -56,8 +56,10 @@ export async function renderPage(
 
   canvas.width = Math.floor(viewport.width);
   canvas.height = Math.floor(viewport.height);
-  canvas.style.width = `${cssWidth}px`;
-  canvas.style.height = `${Math.floor(viewport.height / dpr)}px`;
+  // Fill the host element exactly (its size is set by the reader) so no
+  // sub-pixel background sliver shows between consecutive pages.
+  canvas.style.width = '100%';
+  canvas.style.height = '100%';
 
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('Canvas 2D context unavailable');
