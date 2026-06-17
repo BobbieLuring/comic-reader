@@ -311,6 +311,12 @@
   color: var(--text-faint);
 }
 
+.app-version {
+  width: 100%;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
 .link {
   background: none;
   border: none;

@@ -32,6 +32,9 @@ yarn-error.log
 # Claude Code (local tooling config + git worktrees)
 .claude/
 
+# Generated at build time (scripts/gen-version.mjs)
+/src/version.ts
+
 # Miscellaneous
 /.angular/cache
 .sass-cache/

@@ -24,6 +24,8 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
+      - name: Stamp version
+        run: node scripts/gen-version.mjs
       # GitHub Pages serves a project site under /<repo>/, so the app must be
       # built with that base path. github.event.repository.name supplies it.
       - name: Build

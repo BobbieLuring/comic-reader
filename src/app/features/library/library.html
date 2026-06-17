@@ -107,8 +107,8 @@
   }
 </main>
 
-@if (store.storage(); as s) {
-  <footer class="storage" [class.warn]="storagePercent() >= 80">
+<footer class="storage" [class.warn]="storagePercent() >= 80">
+  @if (store.storage(); as s) {
     <span>
       {{ formatBytes(s.usage) }}
       @if (s.quota) {
@@ -119,16 +119,17 @@
     @if (!s.persisted) {
       <span class="persist-note">storage not pinned — iOS may evict if space is low</span>
     }
-    @if (store.chapters().length > 0) {
-      @if (confirmingClear()) {
-        <span class="confirm">
-          Delete all imported chapters?
-          <button class="link danger" (click)="clearAll()">Yes, delete</button>
-          <button class="link" (click)="confirmingClear.set(false)">Cancel</button>
-        </span>
-      } @else {
-        <button class="link" (click)="confirmingClear.set(true)">Clear all</button>
-      }
+  }
+  @if (store.chapters().length > 0) {
+    @if (confirmingClear()) {
+      <span class="confirm">
+        Delete all imported chapters?
+        <button class="link danger" (click)="clearAll()">Yes, delete</button>
+        <button class="link" (click)="confirmingClear.set(false)">Cancel</button>
+      </span>
+    } @else {
+      <button class="link" (click)="confirmingClear.set(true)">Clear all</button>
     }
-  </footer>
-}
+  }
+  <span class="app-version">v{{ version }} · updated {{ buildDate }}</span>
+</footer>
