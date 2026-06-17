@@ -51,14 +51,19 @@ export class ComicStore {
     return { read, total: all.length, percent: all.length ? Math.round((read / all.length) * 100) : 0 };
   });
 
-  /** Where the big "Continue" button takes you: last opened, else first unread,
-   *  else the very first chapter. */
+  /** Where the big "Continue" button takes you: resume the last-opened chapter
+   *  if it's unfinished; if it's finished, move on to the next chapter; else the
+   *  first unread chapter; else the very first chapter. */
   readonly continueTarget = computed<Chapter | null>(() => {
     const all = this.chapters();
     if (!all.length) return null;
     const lastId = this.lastOpenedId();
     const last = lastId ? all.find((c) => c.id === lastId) : undefined;
-    if (last) return last;
+    if (last) {
+      if (!last.read) return last;
+      const next = all.find((c) => c.order === last.order + 1);
+      if (next) return next;
+    }
     return all.find((c) => !c.read) ?? all[0];
   });
 
