@@ -23,9 +23,9 @@ interface PageSlot {
 }
 
 const MAX_WIDTH = 820;
-const PAGE_GAP = 16;
-/** Inset on each side so the neumorphic page shadow isn't clipped by the scroller. */
-const SIDE_INSET = 32;
+/** Pages read as one continuous strip — no vertical gap, full-bleed width. */
+const PAGE_GAP = 0;
+const SIDE_INSET = 0;
 
 @Component({
   selector: 'app-reader',
