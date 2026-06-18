@@ -1,6 +1,7 @@
 {
   "name": "comic-reader",
   "version": "2.3",
+  "releaseNote": "pinch-zoom fix",
   "scripts": {
     "ng": "ng",
     "prestart": "node scripts/gen-version.mjs",

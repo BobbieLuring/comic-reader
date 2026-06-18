@@ -3,7 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { ComicStore } from '../../core/comic-store';
 import { Theme } from '../../core/theme';
 import { Chapter } from '../../core/models';
-import { APP_VERSION, BUILD_DATE } from '../../../version';
+import { APP_VERSION, BUILD_DATE, RELEASE_NOTE } from '../../../version';
 
 @Component({
   selector: 'app-library',
@@ -17,8 +17,8 @@ export class Library {
   private readonly router = inject(Router);
 
   protected readonly confirmingClear = signal(false);
-  protected readonly version = APP_VERSION;
-  protected readonly buildDate = BUILD_DATE;
+  protected readonly footerInfo =
+    `v${APP_VERSION} · updated ${BUILD_DATE}` + (RELEASE_NOTE ? ` · ${RELEASE_NOTE}` : '');
 
   /** Set of chapter ids that have at least one bookmark, for the list badge. */
   protected readonly bookmarkedIds = computed(
