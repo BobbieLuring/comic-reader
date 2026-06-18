@@ -196,6 +196,14 @@ export class Reader {
     }
   }
 
+  /** A single tap on the page hides the bar (it slides up). Scrolling up still
+   *  brings it back. Taps on links/buttons keep their normal action. */
+  protected onTap(event: Event): void {
+    const target = event.target as HTMLElement | null;
+    if (target?.closest('a, button')) return;
+    this.barHidden.set(true);
+  }
+
   protected onScroll(): void {
     if (this.rafPending) return;
     this.rafPending = true;
