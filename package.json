@@ -1,6 +1,6 @@
 {
   "name": "comic-reader",
-  "version": "2.2",
+  "version": "2.3",
   "scripts": {
     "ng": "ng",
     "prestart": "node scripts/gen-version.mjs",
