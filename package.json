@@ -1,7 +1,7 @@
 {
   "name": "comic-reader",
-  "version": "2.3",
-  "releaseNote": "pinch-zoom fix",
+  "version": "2.4",
+  "releaseNote": "parro e söt 🧡",
   "scripts": {
     "ng": "ng",
     "prestart": "node scripts/gen-version.mjs",
