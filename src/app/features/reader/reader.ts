@@ -117,6 +117,27 @@ export class Reader {
         if (bar) ro.observe(bar);
         this.destroyRef.onDestroy(() => ro.disconnect());
       }
+
+      // iOS pinch-zoom shifts the visual viewport; zooming back out can leave
+      // the document nudged down, exposing a strip of background at the bottom
+      // that previously only cleared on remount. When the zoom settles back to
+      // ~1x, reset that residual offset and re-measure. The inner scroller's
+      // position (your place in the chapter) is untouched.
+      const vv = window.visualViewport;
+      if (vv) {
+        const onZoomSettle = () => {
+          if (vv.scale <= 1.01) {
+            window.scrollTo(0, 0);
+            this.measure();
+          }
+        };
+        vv.addEventListener('resize', onZoomSettle);
+        vv.addEventListener('scroll', onZoomSettle);
+        this.destroyRef.onDestroy(() => {
+          vv.removeEventListener('resize', onZoomSettle);
+          vv.removeEventListener('scroll', onZoomSettle);
+        });
+      }
     });
 
     // When pages + width are ready, restore the saved reading position.
